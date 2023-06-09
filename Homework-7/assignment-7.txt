@@ -1,0 +1,71 @@
+task-1:
+
+from pyspark.sql.types import *
+
+foodratingsClass = StructType().add("name", StringType(), True).add ("food1", IntegerType(), True).add ("food2", 
+IntegerType(), True).add("food3", StringType(), True). add ("food4", StringType(), True).add("placeid", StringType(), 
+True)
+foodratings = spark.read.schema(foodratingsClass).csv('/user/hadoop/foodratings216304.txt')
+foodratings.printSchema()
+#ss
+foodratings.show(5)
+#ss
+
+task-2
+
+foodplacesClass = StructType().add("placeid", StringType(), True).add ("placename", StringType(), True)
+foodplacesClass
+foodplaces = spark.read.schema(foodplacesClass).csv('/user/hadoop/foodplaces216304.txt')
+foodplaces.printSchema()
+#ss
+foodplaces.show(5)
+#ss
+
+task-3:
+
+step-A:
+
+foodratings.registerTempTable('foodratingsT');
+foodplaces.registerTempTable('foodplacesT');
+#ss
+
+Step-B:
+
+foodratings_ex3a = spark.sql("select * from foodratingsT where food2<25 and food4>40")
+foodratings_ex3a.printSchema()
+#ss
+foodratings_ex3a.show(5)
+#ss
+
+Step-C:
+
+foodplaces_ex3b = spark.sql("select * from foodplacesT where placeid > 3")
+foodplaces_ex3b.printSchema()
+#ss
+foodplaces_ex3b.show(5)
+#ss
+
+Task-4:
+
+foodratings_ex4 = foodratings.filter(foodratings['name'] == "Mel").filter(foodratings['food3'] < 25)
+foodratings_ex4.printSchema()
+#ss
+foodratings_ex4.show(5)
+#ss
+
+Task-5:
+
+foodratings_ex5 = foodratings.select(foodratings['name'], foodratings['placeid'])
+foodratings_ex5.printSchema()
+#ss
+foodratings_ex5.show(5)
+#ss
+
+Task-6:
+
+ex6 = foodratings.join(foodplaces, foodratings.placeid == foodplaces.placeid, 'inner')
+ex6.printSchema()
+#ss
+ex6.show(5)
+#ss
+

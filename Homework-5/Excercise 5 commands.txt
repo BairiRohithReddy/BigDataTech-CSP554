@@ -1,0 +1,56 @@
+Excercise 1:-
+
+food_ratings = LOAD '/user/hadoop/foodratings161793.txt' USING PigStorage(',') AS (name:chararray, f1:int, f2:int, f3:int, f4:int, placeid:int);
+
+MAGIC NUMBER = 161793
+
+DESCRIBE food_ratings;
+
+
+Excercise 2:-
+
+food_ratings_subset = FOREACH food_ratings GENERATE name, f4;
+
+STORE food_ratings_subset INTO '/user/hadoop/fr_subset' USING PigStorage(',');
+
+fr_output = LIMIT food_ratings_subset 6;
+
+dump fr_output;
+
+
+Excercise 3:-
+
+fr_profile = GROUP food_ratings ALL;
+
+food_ratings_profile = FOREACH fr_profile GENERATE MIN(food_ratings.f2), MAX(food_ratings.f2), AVG(food_ratings.f2), MIN(food_ratings.f3), MAX(food_ratings.f3), AVG(food_ratings.f3);
+
+DUMP food_ratings_profile;
+
+Excercise 4:-
+
+food_ratings_filtered = FILTER food_ratings BY (f1<20) AND (f3>5);
+
+fr_filtered = LIMIT food_ratings_filtered 6;
+
+DUMP fr_filtered;
+
+Excercise 5:-
+
+food_ratings_2percent = SAMPLE food_ratings 0.02;
+
+filtered = LIMIT food_ratings_2percent 10;
+
+DUMP filtered;
+
+
+Excercise 6:-
+
+food_places = LOAD '/user/hadoop/foodplaces161793.txt' USING PigStorage(',') AS (placeid:int, placename:chararray);
+
+DESCRIBE food_places;
+
+food_ratings_w_place_names = JOIN food_places BY placeid, food_ratings BY placeid;
+
+fr_result = LIMIT food_ratings_w_place_names 6;
+
+DUMP fr_result;
